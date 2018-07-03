@@ -1,9 +1,5 @@
 /*
 3.Clone a linked list with a random pointer.
-
-Solution: Use hashmap
-Space: O(n)
-Time: O(n)
 */
 
 public class ListNode{
@@ -15,7 +11,7 @@ public class ListNode{
 	}
 }
 
-//Solution1:
+//Solution1:using hashmap space:O(n),Time: O(2n)
 public static ListNode randomClone(ListNode head){
 	if (head == null) return;
 	
@@ -58,5 +54,43 @@ public static ListNode randomClone(ListNode head){
 	}
 	return map.get(head);
 }
+
+//Solution2: without using extra space. Space:O(1),TimeO(3n)
+
+public static ListNode randomClone(ListNode head){
+	if (head == null) return;
 	
+	ListNode cur = head;
 	
+	// copy nodes and insert copied nodes into linkedlist
+	while(cur != null){
+		ListNode copy = new ListNode(cur.val);
+		copy.next = cur.next;
+		cur.next = copy;
+		cur = cur.next.next;
+	}
+	
+	//copy random pointers
+	cur = head;
+	while(cur != null){
+		// if orignal random pointers exist
+		if (cur.random != null){
+			cur.next.random = cur.random.next;
+		}
+		cur = cur.next.next;
+	}
+	
+	// break linkedlist
+	cur = head;
+	ListNode newhead = head.next;
+	while(cur != null){
+		ListNode temp = cur.next;
+		cur.next = temp.next;
+		if (temp.next != null){
+			temp.next = temp.next.next;
+		}
+		cur = cur.next;
+	}
+	
+	return newhead;
+}
