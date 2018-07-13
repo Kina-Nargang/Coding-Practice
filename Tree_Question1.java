@@ -1,54 +1,46 @@
 /*
-1.Write an algorithm to find the next node (i.e in-order successor) of a given node in a binary search tree.
-  You may assume that each node has a link to its parent
-  
-Solution:
-	Case1: If the given node dose have a right subtree then find the most-left node of this right subtree.
-	Case2: if the given node dose not have a right subtree then while searching the given node in the BST,
-		store the last parent node that gose to left.The last parent node will be the inorder successor.
+1.Given a BST, create a linkedlist of all the nodes at each depth
 
-Space: O(1)
-Time: O(h) - h is the height of BST
+Space:O(n)
+Time:O(n)
 */
 
-public class TreeNode{
+public TreeNode{
 	int val;
-	TreeNode right;
 	TreeNode left;
-	TreeNode(int x){
-		val = x;
+	TreeNode right;
+	TreeNode(int val){
+		this.val = val;
 	}
 }
-
-public class Solution{
-	public TreeNode findInorderSuccessor(TreeNode root,TreeNode node){
-		// if root is null or given node is null then return null;
-		if (root == null || node == null) return null;
-		
-		TreeNode successor = null;
-		
-		//case1: if given node has right subtree
-		//also works then it is a binary tree
-		if (node.right != null){
-			TreeNode cur = node.right;
-			while(cur.left != null){
-				cur = cur.left;
-			}
-			successor = cur;
-		}else{
-			// case2: if given node does not have a right subtree
-			TreeNode successor = null;
-			TreeNode p = root;
-			while (p != null){
-				if (node.val < p.val){
-					successor = node;
-					p = p.left;
-				}else{
-					p = p.right;
-				}
-			}
-		}
-		
-		return successor;
-	}
+// use a queue
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (root == null) return res;
+        
+        Queue<TreeNode> queue = new LinkedList<>();
+    	// add root to queue first 
+        queue.add(root);
+    	
+    	//when queue is not empty add tree nodes to the queue
+        while(!queue.isEmpty()){
+        	// queue size will be the number of each level's nodes
+            int size = queue.size();
+            List<Integer> list = new LinkedList<>();
+            
+            for (int i = 0;i < size;i++){
+            	// dequeue current node, add current node'left and right to the queue
+                TreeNode cur = queue.remove();
+                if (cur.left != null) queue.add(cur.left);
+                if (cur.right != null) queue.add(cur.right);
+                
+            	// add current node to list
+                list.add(cur.val);
+            }
+        	// add level completed list to outside list
+            res.add(list);
+        }
+        return res;
+    }
 }
